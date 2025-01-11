@@ -22,6 +22,9 @@ set(PROJECT_SOURCES
         utils.h
         config.h
         config.cpp
+        aboutbox.h
+        aboutbox.cpp
+        aboutbox.ui
         ${TS_FILES}
 )
 

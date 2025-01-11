@@ -5,6 +5,7 @@
 #include <QFile>
 #include <QFontDialog>
 #include "utils.h"
+#include "aboutbox.h"
 
 constexpr qint64 MAX_FILE_LENGTH = 1024L * 1024 * 80;
 
@@ -128,4 +129,10 @@ void MainWindow::on_actionZoomOut_triggered()
 void MainWindow::on_actionRestoreDefaultZoom_triggered()
 {
     ui->textBrowser->setFont(config_.font());
+}
+
+void MainWindow::on_actionAbout_triggered()
+{
+    AboutBox box(this);
+    box.exec();
 }

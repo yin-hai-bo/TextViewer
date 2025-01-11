@@ -36,6 +36,8 @@ private slots:
 
     void on_actionRestoreDefaultZoom_triggered();
 
+    void on_actionAbout_triggered();
+
 private:
     Ui::MainWindow * ui;
     Config config_;
