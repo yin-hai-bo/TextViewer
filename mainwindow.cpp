@@ -70,7 +70,7 @@ void MainWindow::on_actionOpen_triggered()
         ui->actionClose->setEnabled(true);
 
         int const textSize = ui->textBrowser->document()->characterCount();
-        _labelTextLength->setText(tr("Text size: %1").arg(QLocale::system().toString(textSize)));
+        statusBarLabel_TotalLength_->setText(tr("Text size: %1").arg(QLocale::system().toString(textSize)));
         return;
     } while (false);
     QMessageBox::warning(this, QString(), errorMsg);
@@ -81,22 +81,22 @@ void MainWindow::on_actionClose_triggered()
     ui->textBrowser->clear();
     this->setWindowTitle(s_windowTitle);
     ui->actionClose->setEnabled(false);
-    _labelTextLength->setText(tr("(No document)"));
+    statusBarLabel_TotalLength_->setText(tr("(No document)"));
 }
 
 void MainWindow::initStatusBar()
 {
     QStatusBar * const sb = ui->statusbar;
-    assert(_labelTextLength == nullptr);
-    _labelTextLength = new QLabel(sb);
-    _labelTextLength->setMinimumWidth(160);
-    _labelTextLength->setAlignment(Qt::AlignmentFlag::AlignCenter);
-    sb->addWidget(_labelTextLength);
+    assert(statusBarLabel_TotalLength_ == nullptr);
+    statusBarLabel_TotalLength_ = new QLabel(sb);
+    statusBarLabel_TotalLength_->setMinimumWidth(160);
+    statusBarLabel_TotalLength_->setAlignment(Qt::AlignmentFlag::AlignCenter);
+    sb->addWidget(statusBarLabel_TotalLength_);
 }
 
 void MainWindow::initTextBrowser()
 {
-    ui->textBrowser->setFont(_config.font());
+    ui->textBrowser->setFont(config_.font());
 }
 
 void MainWindow::on_actionFont_triggered()
@@ -109,8 +109,23 @@ void MainWindow::on_actionFont_triggered()
         ui->textBrowser->setFont(font);
     });
     if (QDialog::DialogCode::Accepted == dialog.exec()) {
-        _config.setFont(ui->textBrowser->font());
+        config_.setFont(ui->textBrowser->font());
     } else {
         ui->textBrowser->setFont(oldFont);
     }
+}
+
+void MainWindow::on_actionZoomIn_triggered()
+{
+    ui->textBrowser->zoomIn();
+}
+
+void MainWindow::on_actionZoomOut_triggered()
+{
+    ui->textBrowser->zoomOut();
+}
+
+void MainWindow::on_actionRestoreDefaultZoom_triggered()
+{
+    ui->textBrowser->setFont(config_.font());
 }

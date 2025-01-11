@@ -30,11 +30,17 @@ private slots:
 
     void on_actionFont_triggered();
 
+    void on_actionZoomIn_triggered();
+
+    void on_actionZoomOut_triggered();
+
+    void on_actionRestoreDefaultZoom_triggered();
+
 private:
     Ui::MainWindow * ui;
-    Config _config;
+    Config config_;
 
-    QLabel * _labelTextLength = nullptr;
+    QLabel * statusBarLabel_TotalLength_ = nullptr;
 
     void initStatusBar();
     void initTextBrowser();
