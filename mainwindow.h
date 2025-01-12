@@ -21,6 +21,11 @@ public:
     MainWindow & operator=(const MainWindow &) = delete;
     ~MainWindow();
 
+    void init(const QApplication &);
+
+protected:
+    void closeEvent(QCloseEvent * event) override;
+
 private slots:
     void on_actionExit_triggered();
 
@@ -44,6 +49,7 @@ private:
 
     QLabel * statusBarLabel_TotalLength_ = nullptr;
 
+    void initWindowState(const QApplication &);
     void initStatusBar();
     void initTextBrowser();
 };

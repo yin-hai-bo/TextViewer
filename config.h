@@ -7,13 +7,26 @@
 class Config
 {
 public:
+    struct WindowState
+    {
+        bool maximized;
+        int x;
+        int y;
+        int width;
+        int height;
+    };
+
+public:
     Config();
 
     void setFont(const QFont & font);
     QFont font();
 
+    void setWindowState(const WindowState &);
+    bool getWindowState(WindowState *);
+
 private:
-    QSettings _settings;
+    QSettings settings_;
 
 };
 

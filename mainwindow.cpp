@@ -4,6 +4,7 @@
 #include <QMessageBox>
 #include <QFile>
 #include <QFontDialog>
+#include <QScreen>
 #include "utils.h"
 #include "aboutbox.h"
 
@@ -17,14 +18,31 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     s_windowTitle = this->windowTitle();
-    initStatusBar();
-    initTextBrowser();
-    on_actionClose_triggered();
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::init(const QApplication & app)
+{
+    initWindowState(app);
+    initStatusBar();
+    initTextBrowser();
+    on_actionClose_triggered();
+}
+
+void MainWindow::closeEvent(QCloseEvent * event)
+{
+    Config::WindowState state;
+    state.maximized = this->isMaximized();
+        state.x = this->x();
+        state.y = this->y();
+        state.width = this->width();
+        state.height = this->height();
+    config_.setWindowState(state);
+    QMainWindow::closeEvent(event);
 }
 
 void MainWindow::on_actionExit_triggered()
@@ -83,6 +101,26 @@ void MainWindow::on_actionClose_triggered()
     this->setWindowTitle(s_windowTitle);
     ui->actionClose->setEnabled(false);
     statusBarLabel_TotalLength_->setText(tr("(No document)"));
+}
+
+
+void MainWindow::initWindowState(const QApplication & app)
+{
+    QRect geometry = QGuiApplication::primaryScreen()->geometry();
+
+    Config::WindowState state;
+    state.maximized = false;
+    state.width = geometry.width() / 2;
+    state.height = geometry.height() / 2;
+    state.x = state.width / 2;
+    state.y = state.height / 2;
+
+    config_.getWindowState(&state);
+
+    this->resize(std::max(80, state.width), std::max(80, state.height));
+    if (state.maximized) {
+        this->setWindowState(Qt::WindowMaximized);
+    }
 }
 
 void MainWindow::initStatusBar()
