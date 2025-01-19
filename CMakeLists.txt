@@ -25,6 +25,8 @@ set(PROJECT_SOURCES
         aboutbox.h
         aboutbox.cpp
         aboutbox.ui
+        recentlist.h
+        recentlist.cpp
         ${TS_FILES}
 )
 

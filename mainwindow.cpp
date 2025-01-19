@@ -9,6 +9,7 @@
 #include "aboutbox.h"
 
 constexpr qint64 MAX_FILE_LENGTH = 1024L * 1024 * 80;
+constexpr int MAX_RECENT_FILES = 5;
 
 static QString s_windowTitle;
 
@@ -17,6 +18,10 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    recentList_.reset(new RecentList(
+        MAX_RECENT_FILES,
+        *this,
+        *ui->menu_File));
     s_windowTitle = this->windowTitle();
 }
 
@@ -30,6 +35,7 @@ void MainWindow::init(const QApplication & app)
     initWindowState(app);
     initStatusBar();
     initTextBrowser();
+    initRecentFilesMenu();
     on_actionClose_triggered();
 }
 
@@ -62,6 +68,10 @@ void MainWindow::on_actionOpen_triggered()
         return;
     }
 
+    openFile(filename);
+}
+
+bool MainWindow::openFile(const QString & filename) {
     QString errorMsg;
     do {
         QFile file(filename);
@@ -90,9 +100,14 @@ void MainWindow::on_actionOpen_triggered()
 
         int const textSize = ui->textBrowser->document()->characterCount();
         statusBarLabel_TotalLength_->setText(tr("Text size: %1").arg(QLocale::system().toString(textSize)));
-        return;
+
+        this->addFileToRecents(filename);
+
+        return true;
     } while (false);
+
     QMessageBox::warning(this, QString(), errorMsg);
+    return false;
 }
 
 void MainWindow::on_actionClose_triggered()
@@ -102,7 +117,6 @@ void MainWindow::on_actionClose_triggered()
     ui->actionClose->setEnabled(false);
     statusBarLabel_TotalLength_->setText(tr("(No document)"));
 }
-
 
 void MainWindow::initWindowState(const QApplication & app)
 {
@@ -136,6 +150,17 @@ void MainWindow::initStatusBar()
 void MainWindow::initTextBrowser()
 {
     ui->textBrowser->setFont(config_.font());
+}
+
+void MainWindow::initRecentFilesMenu()
+{
+    this->recentList_->init(config_.recentFiles());
+}
+
+void MainWindow::addFileToRecents(const QString & filename)
+{
+    recentList_->insertToFront(filename);
+    config_.setRecentFiles(recentList_->cbegin(), recentList_->cend());
 }
 
 void MainWindow::on_actionFont_triggered()
@@ -173,4 +198,12 @@ void MainWindow::on_actionAbout_triggered()
 {
     AboutBox box(this);
     box.exec();
+}
+
+void MainWindow::onActionRecentFile(int index, const QString & filename)
+{
+    qDebug() << "Recent File #" << index << ": " << filename;
+    if (!this->openFile(filename)) {
+        this->recentList_->erase(index);
+    }
 }

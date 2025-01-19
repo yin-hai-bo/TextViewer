@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QLabel>
 #include "config.h"
+#include "recentlist.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -11,7 +12,7 @@ class MainWindow;
 }
 QT_END_NAMESPACE
 
-class MainWindow : public QMainWindow
+class MainWindow : public QMainWindow, public RecentList::IRecentFileSignalReceiver
 {
     Q_OBJECT
 
@@ -22,6 +23,8 @@ public:
     ~MainWindow();
 
     void init(const QApplication &);
+
+    void onActionRecentFile(int index, const QString & filename) override;
 
 protected:
     void closeEvent(QCloseEvent * event) override;
@@ -45,12 +48,18 @@ private slots:
 
 private:
     Ui::MainWindow * ui;
-    Config config_;
-
     QLabel * statusBarLabel_TotalLength_ = nullptr;
+
+    Config config_;
+    std::unique_ptr<RecentList> recentList_;
 
     void initWindowState(const QApplication &);
     void initStatusBar();
     void initTextBrowser();
+    void initRecentFilesMenu();
+
+    void addFileToRecents(const QString & filename);
+    bool openFile(const QString & filename);
+
 };
 #endif // MAINWINDOW_H

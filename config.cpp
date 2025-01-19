@@ -14,19 +14,7 @@ static const char KEY_WIDTH[] = "width";
 static const char KEY_HEIGHT[] = "height";
 static const char KEY_MAXIMIZED[] = "maximized";
 
-class SettingsGroupGuard
-{
-    QSettings & settings_;
-public:
-    SettingsGroupGuard(QSettings & settings, const char * prefix)
-        : settings_(settings)
-    {
-        settings_.beginGroup(prefix);
-    }
-    SettingsGroupGuard(const SettingsGroupGuard &);
-    SettingsGroupGuard & operator=(const SettingsGroupGuard &);
-    ~SettingsGroupGuard() { settings_.endGroup(); }
-};
+const char Config::KEY_RECENT_FILES[] = "recentFiles";
 
 class FontConfig
 {
@@ -88,4 +76,25 @@ bool Config::getWindowState(WindowState * state)
     state->width = settings_.value(KEY_WIDTH, state->width).toInt();
     state->height = settings_.value(KEY_HEIGHT, state->height).toInt();
     return true;
+}
+
+QStringList Config::recentFiles()
+{
+    SettingsGroupGuard sgg(settings_, KEY_RECENT_FILES);
+
+    auto keys = settings_.childKeys();
+    if (keys.empty()) {
+        return QStringList();
+    }
+
+    keys.sort();
+    QStringList list;
+    list.reserve(keys.size());
+
+    const QVariant emptyStr(QString(""));
+    for (const auto & key : keys) {
+        list.push_back(settings_.value(key, emptyStr).toString());
+    }
+
+    return list;
 }
