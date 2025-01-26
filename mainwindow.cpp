@@ -1,9 +1,10 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
 #include <QFileDialog>
-#include <QMessageBox>
 #include <QFile>
 #include <QFontDialog>
+#include <QMessageBox>
+#include <QMouseEvent>
 #include <QScreen>
 #include "utils.h"
 #include "aboutbox.h"
@@ -46,6 +47,24 @@ void MainWindow::closeEvent(QCloseEvent * event)
         state.height = this->height();
     config_.setWindowState(state);
     QMainWindow::closeEvent(event);
+}
+
+bool MainWindow::eventFilter(
+    QObject *obj,
+    QEvent *event)
+{
+    if (!documentOpened_ || obj != ui->textBrowser) {
+        return QObject::eventFilter(obj, event);
+    }
+
+    if (event->type() == QEvent::MouseButtonPress) {
+        auto mouseEvent = static_cast<QMouseEvent *>(event);
+        if (mouseEvent->button() == Qt::MiddleButton) {
+            qDebug() << "Middle button pressed";
+        }
+    }
+
+    return QObject::eventFilter(obj, event);
 }
 
 void MainWindow::on_actionExit_triggered()
@@ -100,7 +119,7 @@ bool MainWindow::openFile(const QString & filename) {
 
         this->addFileToRecents(filename);
 
-        return true;
+        return documentOpened_ = true;
     } while (false);
 
     QMessageBox::warning(this, QString(), errorMsg);
@@ -113,6 +132,7 @@ void MainWindow::on_actionClose_triggered()
     this->setWindowTitle(s_windowTitle);
     ui->actionClose->setEnabled(false);
     statusBarLabel_TotalLength_->setText(tr("(No document)"));
+    documentOpened_ = false;
 }
 
 void MainWindow::initWindowState(const QApplication & app)
@@ -146,7 +166,9 @@ void MainWindow::initStatusBar()
 
 void MainWindow::initTextBrowser()
 {
-    ui->textBrowser->setFont(config_.font());
+    QTextBrowser & tb = *ui->textBrowser;
+    tb.setFont(config_.font());
+    tb.installEventFilter(this);
 }
 
 void MainWindow::initRecentFilesMenu()

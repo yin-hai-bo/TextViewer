@@ -27,6 +27,7 @@ public:
 
 protected:
     void closeEvent(QCloseEvent * event) override;
+    bool eventFilter(QObject *obj, QEvent *event) override;
 
 private slots:
     void on_actionExit_triggered();
@@ -52,6 +53,8 @@ private:
 
     Config config_;
     std::unique_ptr<RecentList> recentList_;
+
+    bool documentOpened_ = false;
 
     void initWindowState(const QApplication &);
     void initStatusBar();
