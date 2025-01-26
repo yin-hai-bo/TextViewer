@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QLabel>
+#include <memory>
 #include "config.h"
 #include "recentlist.h"
 
@@ -18,8 +19,6 @@ class MainWindow : public QMainWindow, public RecentList::IRecentFileSignalRecei
 
 public:
     MainWindow(QWidget *parent = nullptr);
-    MainWindow(const MainWindow &) = delete;
-    MainWindow & operator=(const MainWindow &) = delete;
     ~MainWindow();
 
     void init(const QApplication &);
@@ -47,7 +46,8 @@ private slots:
     void on_actionAbout_triggered();
 
 private:
-    Ui::MainWindow * ui;
+    std::unique_ptr<Ui::MainWindow> ui;
+
     QLabel * statusBarLabel_TotalLength_ = nullptr;
 
     Config config_;

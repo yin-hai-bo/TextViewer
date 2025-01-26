@@ -25,10 +25,7 @@ MainWindow::MainWindow(QWidget *parent)
     s_windowTitle = this->windowTitle();
 }
 
-MainWindow::~MainWindow()
-{
-    delete ui;
-}
+MainWindow::~MainWindow() = default;
 
 void MainWindow::init(const QApplication & app)
 {
