@@ -5,6 +5,7 @@
 #include <QFontDialog>
 #include <QMessageBox>
 #include <QMouseEvent>
+#include <QPainter>
 #include <QScreen>
 #include "utils.h"
 #include "aboutbox.h"
@@ -30,6 +31,7 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    autoScrollState_.enabled = false;
     recentList_.reset(new RecentList(
         MAX_RECENT_FILES,
         *this,
@@ -72,6 +74,8 @@ bool MainWindow::eventFilter(
         auto mouseEvent = static_cast<QMouseEvent *>(event);
         if (mouseEvent->button() == Qt::MiddleButton) {
             qDebug() << "Middle button pressed";
+            autoScrollState_.enabled = !autoScrollState_.enabled;
+            autoScrollState_.anchor = mouseEvent->pos();
         }
     }
 

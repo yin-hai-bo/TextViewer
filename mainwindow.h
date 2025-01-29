@@ -58,6 +58,12 @@ private:
 
     bool documentOpened_ = false;
 
+    struct AutoScrollState
+    {
+        bool enabled;
+        QPoint anchor;
+    } autoScrollState_;
+
     void initWindowState(const QApplication &);
     void initStatusBar();
     void initTextBrowser();

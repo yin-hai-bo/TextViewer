@@ -36,6 +36,8 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
         res/textviewer.ico res/TextViewer.rc
+        res/scroll-flag.png
+        res/textviewer.qrc
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET TextViewer APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR

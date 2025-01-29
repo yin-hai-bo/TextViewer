@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/images">
+        <file>scroll-flag.png</file>
+    </qresource>
+</RCC>
