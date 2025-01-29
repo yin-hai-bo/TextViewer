@@ -46,6 +46,8 @@ private slots:
 
     void on_actionAbout_triggered();
 
+    void on_actionLineHeight_triggered();
+
 private:
     std::unique_ptr<Ui::MainWindow> ui;
 

@@ -10,7 +10,4 @@ AboutBox::AboutBox(QWidget *parent) :
     this->setWindowFlags(Qt::MSWindowsFixedSizeDialogHint | Qt::Dialog);
 }
 
-AboutBox::~AboutBox()
-{
-    delete ui;
-}
+AboutBox::~AboutBox() = default;

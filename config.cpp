@@ -14,6 +14,9 @@ static const char KEY_WIDTH[] = "width";
 static const char KEY_HEIGHT[] = "height";
 static const char KEY_MAXIMIZED[] = "maximized";
 
+static const char GROUP_VIEW[] = "view";
+static const char KEY_LINE_HEIGHT[] = "lineHeight";
+
 const char Config::KEY_RECENT_FILES[] = "recentFiles";
 
 class FontConfig
@@ -97,4 +100,16 @@ QStringList Config::recentFiles()
     }
 
     return list;
+}
+
+int Config::lineHeight()
+{
+    SettingsGroupGuard sgg(settings_, GROUP_VIEW);
+    return settings_.value(KEY_LINE_HEIGHT, 100).toInt();
+}
+
+void Config::setLineHeight(int value)
+{
+    SettingsGroupGuard sgg(settings_, GROUP_VIEW);
+    settings_.setValue(KEY_LINE_HEIGHT, value);
 }

@@ -8,11 +8,22 @@
 #include <QScreen>
 #include "utils.h"
 #include "aboutbox.h"
+#include "lineheightdialog.h"
 
 constexpr qint64 MAX_FILE_LENGTH = 1024L * 1024 * 80;
 constexpr int MAX_RECENT_FILES = 5;
 
 static QString s_windowTitle;
+
+static void setTextBrowserLineHeight(QTextBrowser * tb, int value)
+{
+    QTextBlockFormat blockFormat;
+    blockFormat.setLineHeight(value, QTextBlockFormat::ProportionalHeight);
+
+    QTextCursor cursor(tb->document());
+    cursor.select(QTextCursor::Document);
+    cursor.mergeBlockFormat(blockFormat);
+}
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -119,6 +130,8 @@ bool MainWindow::openFile(const QString & filename) {
 
         this->addFileToRecents(filename);
 
+        setTextBrowserLineHeight(ui->textBrowser, config_.lineHeight());
+
         return documentOpened_ = true;
     } while (false);
 
@@ -217,6 +230,16 @@ void MainWindow::on_actionAbout_triggered()
 {
     AboutBox box(this);
     box.exec();
+}
+
+void MainWindow::on_actionLineHeight_triggered()
+{
+    LineHeightDialog dlg(this, this->config_);
+    if (QDialog::Accepted == dlg.exec()) {
+        int value = dlg.lineHeight();
+        this->config_.setLineHeight(value);
+        setTextBrowserLineHeight(ui->textBrowser, value);
+    }
 }
 
 void MainWindow::onActionRecentFile(int index, const QString & filename)

@@ -63,6 +63,8 @@
     <addaction name="actionRestoreDefaultZoom"/>
     <addaction name="separator"/>
     <addaction name="actionFont"/>
+    <addaction name="separator"/>
+    <addaction name="actionLineHeight"/>
    </widget>
    <widget class="QMenu" name="menu_Help">
     <property name="title">
@@ -178,6 +180,14 @@
    </property>
    <property name="text">
     <string>&amp;About</string>
+   </property>
+  </action>
+  <action name="actionLineHeight">
+   <property name="text">
+    <string>Line &amp;Height...</string>
+   </property>
+   <property name="toolTip">
+    <string>Setting the line height</string>
    </property>
   </action>
  </widget>

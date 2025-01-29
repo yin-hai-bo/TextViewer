@@ -64,6 +64,9 @@ public:
 
     QStringList recentFiles();
 
+    int lineHeight();
+    void setLineHeight(int value);
+
 private:
     QSettings settings_;
 

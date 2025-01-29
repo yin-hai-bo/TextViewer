@@ -27,6 +27,7 @@ set(PROJECT_SOURCES
         aboutbox.ui
         recentlist.h
         recentlist.cpp
+        lineheightdialog.h lineheightdialog.cpp lineheightdialog.ui
         ${TS_FILES}
 )
 

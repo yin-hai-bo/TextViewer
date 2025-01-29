@@ -2,6 +2,7 @@
 #define ABOUTBOX_H
 
 #include <QDialog>
+#include <memory>
 
 namespace Ui {
 class AboutBox;
@@ -16,7 +17,7 @@ public:
     ~AboutBox();
 
 private:
-    Ui::AboutBox *ui;
+    std::unique_ptr<Ui::AboutBox> ui;
 };
 
 #endif // ABOUTBOX_H
