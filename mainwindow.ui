@@ -28,7 +28,7 @@
      <number>0</number>
     </property>
     <item>
-     <widget class="QTextBrowser" name="textBrowser">
+     <widget class="Viewer" name="textBrowser">
       <property name="lineWidth">
        <number>1</number>
       </property>
@@ -191,6 +191,13 @@
    </property>
   </action>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>Viewer</class>
+   <extends>QTextBrowser</extends>
+   <header>viewer.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

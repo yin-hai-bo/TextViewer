@@ -4,12 +4,11 @@
 #include <QFile>
 #include <QFontDialog>
 #include <QMessageBox>
-#include <QMouseEvent>
-#include <QPainter>
 #include <QScreen>
-#include "utils.h"
 #include "aboutbox.h"
 #include "lineheightdialog.h"
+#include "utils.h"
+#include "viewer.h"
 
 constexpr qint64 MAX_FILE_LENGTH = 1024L * 1024 * 80;
 constexpr int MAX_RECENT_FILES = 5;
@@ -60,26 +59,6 @@ void MainWindow::closeEvent(QCloseEvent * event)
         state.height = this->height();
     config_.setWindowState(state);
     QMainWindow::closeEvent(event);
-}
-
-bool MainWindow::eventFilter(
-    QObject *obj,
-    QEvent *event)
-{
-    if (!documentOpened_ || obj != ui->textBrowser) {
-        return QObject::eventFilter(obj, event);
-    }
-
-    if (event->type() == QEvent::MouseButtonPress) {
-        auto mouseEvent = static_cast<QMouseEvent *>(event);
-        if (mouseEvent->button() == Qt::MiddleButton) {
-            qDebug() << "Middle button pressed";
-            autoScrollState_.enabled = !autoScrollState_.enabled;
-            autoScrollState_.anchor = mouseEvent->pos();
-        }
-    }
-
-    return QObject::eventFilter(obj, event);
 }
 
 void MainWindow::on_actionExit_triggered()
@@ -136,7 +115,8 @@ bool MainWindow::openFile(const QString & filename) {
 
         setTextBrowserLineHeight(ui->textBrowser, config_.lineHeight());
 
-        return documentOpened_ = true;
+        ui->textBrowser->documentOpened();
+        return true;
     } while (false);
 
     QMessageBox::warning(this, QString(), errorMsg);
@@ -149,7 +129,7 @@ void MainWindow::on_actionClose_triggered()
     this->setWindowTitle(s_windowTitle);
     ui->actionClose->setEnabled(false);
     statusBarLabel_TotalLength_->setText(tr("(No document)"));
-    documentOpened_ = false;
+    ui->textBrowser->documentClosed();
 }
 
 void MainWindow::initWindowState(const QApplication & app)
