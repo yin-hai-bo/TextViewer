@@ -122,7 +122,7 @@ bool MainWindow::openFile(const QString & filename) {
         ui->textBrowser->setPlainText(in.readAll());
 
         this->setWindowTitle(
-            QString("%1 [%2]").arg(s_windowTitle).arg(QFileInfo(filename).fileName()));
+            QString("%1 - [%2]").arg(s_windowTitle).arg(QFileInfo(filename).fileName()));
         ui->actionClose->setEnabled(true);
 
         int const textSize = ui->textBrowser->document()->characterCount();
