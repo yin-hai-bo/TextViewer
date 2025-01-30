@@ -4,6 +4,9 @@
 #include <QObject>
 #include <QVariant>
 
+#include <cassert>
+#include <memory>
+
 class ConnectGuard
 {
     QMetaObject::Connection _connection;
@@ -34,6 +37,58 @@ public:
     {}
 
     ~ConnectGuard() { QObject::disconnect(_connection); }
+};
+
+template<typename T>
+class Connectable
+{
+    std::unique_ptr<T> t_;
+    QMetaObject::Connection connection_;
+    bool connected_ = false;
+
+public:
+    explicit Connectable(T * t = nullptr)
+        : t_(t)
+    {}
+    Connectable(Connectable && other) = delete;
+    Connectable & operator = (Connectable && other) = delete;
+    ~Connectable() { disconnect(); }
+
+    void reset(T * t = nullptr)
+    {
+        if (t != t_.get()) {
+            disconnect();
+            t_.reset(t);
+        }
+    }
+
+    T * operator->() { return t_.operator->(); }
+    T const * operator->() const { return t_.operator->(); }
+
+    template<typename Func1, typename Func2>
+    void connect(
+        Func1 signal,
+        const typename QtPrivate::ContextTypeForFunctor<Func2>::ContextType * context,
+        Func2 && slot)
+    {
+        assert(!connected_);
+        assert(t_);
+        if (!connected_ && t_) {
+            connection_ = QObject::connect(t_.get(), signal, context, std::forward<Func2>(slot));
+            connected_ = true;
+        }
+    }
+
+    void disconnect()
+    {
+        if (connected_) {
+            QObject::disconnect(connection_);
+            connected_ = false;
+        }
+    }
+
+    operator bool() const { return t_.get() != nullptr; }
+    bool operator!() const { return !operator bool(); }
 };
 
 struct Utils
