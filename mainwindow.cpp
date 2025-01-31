@@ -228,7 +228,6 @@ void MainWindow::on_actionLineHeight_triggered()
 
 void MainWindow::onActionRecentFile(int index, const QString & filename)
 {
-    qDebug() << "Recent File #" << index << ": " << filename;
     if (!this->openFile(filename)) {
         this->recentList_->erase(index);
         this->config_.setRecentFiles(recentList_->cbegin(), recentList_->cend());
