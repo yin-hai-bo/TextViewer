@@ -48,14 +48,12 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
 # For more information, see https://doc.qt.io/qt-6/qt-add-executable.html#target-creation
 
     # qt_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})
-    qt_add_lupdate(
-        TS_FILES
-            ${TS_FILES}
-        SOURCES
-            ${PROJECT_SOURCES}
+
+    qt_add_translations(
+        TextViewer
+        TS_FILES ${TS_FILES}
     )
 
-    add_dependencies(TextViewer TextViewer_lupdate)
 else()
     if(ANDROID)
         add_library(TextViewer SHARED
