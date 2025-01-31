@@ -22,7 +22,6 @@ public:
 signals:
 
 protected:
-    void paintEvent(QPaintEvent * event) override;
     void mousePressEvent(QMouseEvent * event) override;
     void mouseReleaseEvent(QMouseEvent * event) override;
     void mouseMoveEvent(QMouseEvent * event) override;
@@ -31,15 +30,25 @@ private slots:
     void onTimerTriggered();
 
 private:
+    QPixmap imgAnchor_;
+    QPixmap imgUp_;
+    QPixmap imgDown_;
+
+    QPixmap const * currentCursor_ = nullptr;
+
     bool documentOpened_ = false;
 
+    QPoint mouseCurrentPosition_;
     QPoint autoScrollAnchor_;
     QPoint mouseMiddleButtonDownPosition_;
-    float autoScrollSpeed_ = 0.f;
+    int autoScrollSpeed_ = 0;
 
     Connectable<QTimer> timer_;
 
+    void startAutoScroll();
     void stopAutoScroll();
+
+    void changeCursor(const QPixmap &);
 };
 
 #endif // VIEWER_H

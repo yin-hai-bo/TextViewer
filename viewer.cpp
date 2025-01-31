@@ -1,37 +1,26 @@
 #include "viewer.h"
 #include <QMouseEvent>
-#include <QPainter>
 #include <QPixmap>
 #include <QScrollBar>
 
-static QPixmap * s_scrollAnchorPicture;
-static constexpr int SCROLL_ANCHOR_WIDTH = 32;
-static constexpr int SCROLL_ANCHOR_HEIGHT = 32;
+static constexpr int AUTO_SCROLL_THRESHOLD = 48;
 
 Viewer::Viewer(QWidget * parent)
-    : QTextBrowser{parent}
-{
-    if (s_scrollAnchorPicture == nullptr) {
-        s_scrollAnchorPicture = new QPixmap(":/images/scroll-flag.png");
-    }
-}
-
-void Viewer::paintEvent(QPaintEvent * event)
-{
-    QTextBrowser::paintEvent(event);
-    if (documentOpened_ && isAutoScrollState()) {
-        QPainter painter(viewport());
-        auto pos = autoScrollAnchor_;
-        pos.rx() -= SCROLL_ANCHOR_WIDTH / 2;
-        pos.ry() -= SCROLL_ANCHOR_HEIGHT / 2;
-        painter.drawPixmap(pos, *s_scrollAnchorPicture);
-    }
-}
+    : QTextBrowser(parent)
+    , imgAnchor_(":/images/scroll-flag.png")
+    , imgUp_(":/images/up.png")
+    , imgDown_(":/images/down.png")
+{}
 
 void Viewer::mousePressEvent(QMouseEvent * event)
 {
-    if (documentOpened_ && event->button() == Qt::MiddleButton) {
-        mouseMiddleButtonDownPosition_ = event->pos();
+    if (documentOpened_) {
+        auto const button = event->button();
+        if (Qt::MiddleButton == button) {
+            mouseMiddleButtonDownPosition_ = event->pos();
+        } else {
+            stopAutoScroll();
+        }
     }
     QTextBrowser::mousePressEvent(event);
 }
@@ -46,10 +35,8 @@ void Viewer::mouseReleaseEvent(QMouseEvent * event)
                 stopAutoScroll();
             } else {
                 autoScrollAnchor_ = event->pos();
-                autoScrollSpeed_ = 0.f;
-                timer_.reset(new QTimer());
-                timer_.connect(&QTimer::timeout, this, &Viewer::onTimerTriggered);
-                timer_->start(50);
+                autoScrollSpeed_ = 0;
+                startAutoScroll();
             }
             this->repaint();
         }
@@ -60,8 +47,33 @@ void Viewer::mouseReleaseEvent(QMouseEvent * event)
 void Viewer::mouseMoveEvent(QMouseEvent * event)
 {
     QTextBrowser::mouseMoveEvent(event);
+    mouseCurrentPosition_ = event->pos();
     if (isAutoScrollState()) {
-        autoScrollSpeed_ = (event->pos().y() - autoScrollAnchor_.y()) / 50.f;
+        int delta = mouseCurrentPosition_.y() - autoScrollAnchor_.y();
+        int absDelta = abs(delta);
+
+        const QPixmap * expectedCursor;
+        if (absDelta > AUTO_SCROLL_THRESHOLD) {
+            absDelta -= AUTO_SCROLL_THRESHOLD;
+            absDelta /= 15;
+            if (absDelta < 50) {
+                autoScrollSpeed_ = absDelta;
+            } else {
+                autoScrollSpeed_ = absDelta * absDelta;
+            }
+            if (delta < 0) {
+                autoScrollSpeed_ = -autoScrollSpeed_;
+                expectedCursor = &imgUp_;
+            } else {
+                expectedCursor = &imgDown_;
+            }
+        } else {
+            autoScrollSpeed_ = 0;
+            expectedCursor = &imgAnchor_;
+        }
+        if (expectedCursor != currentCursor_) {
+            changeCursor(*expectedCursor);
+        }
     }
 }
 
@@ -71,7 +83,24 @@ void Viewer::onTimerTriggered()
     bar->setValue(bar->value() + autoScrollSpeed_);
 }
 
+void Viewer::startAutoScroll()
+{
+    assert(!timer_);
+    timer_.reset(new QTimer());
+    timer_.connect(&QTimer::timeout, this, &Viewer::onTimerTriggered);
+    timer_->start(50);
+
+    changeCursor(imgAnchor_);
+}
+
 void Viewer::stopAutoScroll()
 {
     timer_.reset();
+    this->viewport()->setCursor(Qt::ArrowCursor);
+}
+
+void Viewer::changeCursor(const QPixmap & pixmap)
+{
+    this->viewport()->setCursor(QCursor(pixmap, pixmap.width() / 2, pixmap.height() / 2));
+    currentCursor_ = &pixmap;
 }
