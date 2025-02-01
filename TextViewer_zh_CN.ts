@@ -9,12 +9,12 @@
         <translation>关于</translation>
     </message>
     <message>
-        <location filename="aboutbox.ui" line="54"/>
+        <location filename="aboutbox.ui" line="57"/>
         <source>A simple text document viewer</source>
         <translation>一个简单的纯文本文档的查看程序</translation>
     </message>
     <message>
-        <location filename="aboutbox.ui" line="64"/>
+        <location filename="aboutbox.ui" line="67"/>
         <source>&lt;a href=&quot;https://github.com/yin-hai-bo/TextViewer&quot;&gt;https://github.com/yin-hai-bo/TextViewer&lt;/a&gt;</source>
         <translation></translation>
     </message>
