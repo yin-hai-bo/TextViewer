@@ -44,35 +44,55 @@ void Viewer::mouseReleaseEvent(QMouseEvent * event)
     QTextBrowser::mouseReleaseEvent(event);
 }
 
+int Viewer::calcAutoScrollSpeed(QPoint mouseCurrentPos)
+{
+    int delta = mouseCurrentPos.y() - autoScrollAnchor_.y();
+    int absDelta = abs(delta);
+
+    if (absDelta > AUTO_SCROLL_THRESHOLD) {
+        absDelta -= AUTO_SCROLL_THRESHOLD;
+        absDelta /= 15;
+        if (absDelta < 50) {
+            autoScrollSpeed_ = absDelta;
+        } else {
+            autoScrollSpeed_ = absDelta * absDelta;
+        }
+        if (delta < 0) {
+            autoScrollSpeed_ = -autoScrollSpeed_;
+        } else {
+        }
+    } else {
+        autoScrollSpeed_ = 0;
+    }
+
+    return autoScrollSpeed_;
+}
+
+const QPixmap & Viewer::decideCursorInAutoScrolling() const
+{
+    if (autoScrollSpeed_ < 0) {
+        return imgUp_;
+    }
+    return autoScrollSpeed_ > 0 ? imgDown_ : imgAnchor_;
+}
+
+static Viewer::Direction decideDirection(int autoScrollSpeed)
+{
+    if (autoScrollSpeed < 0) {
+        return Viewer::Direction::Down;
+    }
+    return autoScrollSpeed > 0 ? Viewer::Direction::Up : Viewer::Direction::None;
+}
+
 void Viewer::mouseMoveEvent(QMouseEvent * event)
 {
     QTextBrowser::mouseMoveEvent(event);
-    mouseCurrentPosition_ = event->pos();
     if (isAutoScrollState()) {
-        int delta = mouseCurrentPosition_.y() - autoScrollAnchor_.y();
-        int absDelta = abs(delta);
-
-        const QPixmap * expectedCursor;
-        if (absDelta > AUTO_SCROLL_THRESHOLD) {
-            absDelta -= AUTO_SCROLL_THRESHOLD;
-            absDelta /= 15;
-            if (absDelta < 50) {
-                autoScrollSpeed_ = absDelta;
-            } else {
-                autoScrollSpeed_ = absDelta * absDelta;
-            }
-            if (delta < 0) {
-                autoScrollSpeed_ = -autoScrollSpeed_;
-                expectedCursor = &imgUp_;
-            } else {
-                expectedCursor = &imgDown_;
-            }
-        } else {
-            autoScrollSpeed_ = 0;
-            expectedCursor = &imgAnchor_;
-        }
-        if (expectedCursor != currentCursor_) {
-            changeCursor(*expectedCursor);
+        calcAutoScrollSpeed(event->pos());
+        auto & expectedCursor = decideCursorInAutoScrolling();
+        if (&expectedCursor != currentCursor_) {
+            changeCursor(expectedCursor);
+            emit autoScrollStateChangeSignal(true, decideDirection(autoScrollSpeed_));
         }
     }
 }
@@ -91,12 +111,15 @@ void Viewer::startAutoScroll()
     timer_->start(50);
 
     changeCursor(imgAnchor_);
+
+    emit autoScrollStateChangeSignal(true, Direction::None);
 }
 
 void Viewer::stopAutoScroll()
 {
     timer_.reset();
     this->viewport()->setCursor(Qt::ArrowCursor);
+    emit autoScrollStateChangeSignal(false, Direction::None);
 }
 
 void Viewer::changeCursor(const QPixmap & pixmap)

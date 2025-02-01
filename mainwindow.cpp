@@ -164,7 +164,6 @@ void MainWindow::initStatusBar()
     assert(statusBarLabels_[0] == nullptr);
 
     QStatusBar * const sb = ui->statusbar;
-
     for (size_t i = 0; i < statusBarLabels_.size(); ++i) {
         auto label = statusBarLabels_[i] = new QLabel(sb);
         label->setAlignment(Qt::AlignmentFlag::AlignCenter);
@@ -173,11 +172,36 @@ void MainWindow::initStatusBar()
     }
 }
 
+class AutoScrollStateDescription
+{};
+
+static const QString & decideAutoScrollStateDescription(bool onOff, Viewer::Direction dir)
+{
+    static const QString EMPTY("");
+    static const QString NONE = QObject::tr("Auto Scrolling");
+    static const QString UP = QObject::tr("Auto Scrolling (UP)");
+    static const QString DOWN = QObject::tr("Auto Scrolling (DOWN)");
+    if (!onOff) {
+        return EMPTY;
+    }
+    switch (dir) {
+    case Viewer::Direction::Up:
+        return UP;
+    case Viewer::Direction::Down:
+        return DOWN;
+    default:
+        return NONE;
+    }
+}
+
 void MainWindow::initTextBrowser()
 {
-    QTextBrowser & tb = *ui->textBrowser;
-    tb.setFont(config_.font());
-    tb.installEventFilter(this);
+    Viewer * const v = ui->textBrowser;
+    v->setFont(config_.font());
+    connect(v, &Viewer::autoScrollStateChangeSignal, [this](bool onOff, Viewer::Direction dir) {
+        this->statusBarLabels_[AUTO_SCROLLING]->setText(
+            decideAutoScrollStateDescription(onOff, dir));
+    });
 }
 
 void MainWindow::initRecentFilesMenu()

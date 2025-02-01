@@ -9,6 +9,8 @@ class Viewer : public QTextBrowser
 {
     Q_OBJECT
 public:
+    enum class Direction { None, Up, Down };
+
     explicit Viewer(QWidget * parent = nullptr);
     void documentOpened() { documentOpened_ = true; }
     void documentClosed()
@@ -20,6 +22,7 @@ public:
     bool isAutoScrollState() const { return timer_; }
 
 signals:
+    void autoScrollStateChangeSignal(bool onOff, Direction direction);
 
 protected:
     void mousePressEvent(QMouseEvent * event) override;
@@ -38,7 +41,6 @@ private:
 
     bool documentOpened_ = false;
 
-    QPoint mouseCurrentPosition_;
     QPoint autoScrollAnchor_;
     QPoint mouseMiddleButtonDownPosition_;
     int autoScrollSpeed_ = 0;
@@ -49,6 +51,9 @@ private:
     void stopAutoScroll();
 
     void changeCursor(const QPixmap &);
+
+    int calcAutoScrollSpeed(QPoint mouseCurrentPos);
+    const QPixmap & decideCursorInAutoScrolling() const;
 };
 
 #endif // VIEWER_H

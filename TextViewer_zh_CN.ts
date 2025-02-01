@@ -195,4 +195,22 @@
         <translation>单击鼠标中键，开/关自动滚屏模式...</translation>
     </message>
 </context>
+<context>
+    <name>QObject</name>
+    <message>
+        <location filename="mainwindow.cpp" line="181"/>
+        <source>Auto Scrolling</source>
+        <translation>自动滚屏</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.cpp" line="182"/>
+        <source>Auto Scrolling (UP)</source>
+        <translation>自动滚屏（向上）</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.cpp" line="183"/>
+        <source>Auto Scrolling (DOWN)</source>
+        <translation>自动滚屏（向下）</translation>
+    </message>
+</context>
 </TS>
