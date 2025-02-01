@@ -15,6 +15,12 @@ constexpr int MAX_RECENT_FILES = 5;
 
 static QString s_windowTitle;
 
+enum StatusBarLabel {
+    DOCUMENT_LENGTH,
+    AUTO_SCROLLING,
+    CLICK_TO_AUTO_SCROLLING,
+};
+
 static void setTextBrowserLineHeight(QTextBrowser * tb, int value)
 {
     QTextBlockFormat blockFormat;
@@ -109,7 +115,8 @@ bool MainWindow::openFile(const QString & filename) {
         ui->actionClose->setEnabled(true);
 
         int const textSize = ui->textBrowser->document()->characterCount();
-        statusBarLabel_TotalLength_->setText(tr("Text size: %1").arg(QLocale::system().toString(textSize)));
+        statusBarLabels_[DOCUMENT_LENGTH]->setText(tr("Text size: %1").arg(QLocale::system().toString(textSize)));
+        statusBarLabels_[CLICK_TO_AUTO_SCROLLING]->setText(tr("Click mouse middle button to on/off auto scrolling ..."));
 
         this->addFileToRecents(filename);
 
@@ -128,7 +135,8 @@ void MainWindow::on_actionClose_triggered()
     ui->textBrowser->clear();
     this->setWindowTitle(s_windowTitle);
     ui->actionClose->setEnabled(false);
-    statusBarLabel_TotalLength_->setText(tr("(No document)"));
+    statusBarLabels_[DOCUMENT_LENGTH]->setText(tr("(No document)"));
+    statusBarLabels_[CLICK_TO_AUTO_SCROLLING]->setText("");
     ui->textBrowser->documentClosed();
 }
 
@@ -153,12 +161,16 @@ void MainWindow::initWindowState(const QApplication & app)
 
 void MainWindow::initStatusBar()
 {
+    assert(statusBarLabels_[0] == nullptr);
+
     QStatusBar * const sb = ui->statusbar;
-    assert(statusBarLabel_TotalLength_ == nullptr);
-    statusBarLabel_TotalLength_ = new QLabel(sb);
-    statusBarLabel_TotalLength_->setMinimumWidth(160);
-    statusBarLabel_TotalLength_->setAlignment(Qt::AlignmentFlag::AlignCenter);
-    sb->addWidget(statusBarLabel_TotalLength_);
+
+    for (size_t i = 0; i < statusBarLabels_.size(); ++i) {
+        auto label = statusBarLabels_[i] = new QLabel(sb);
+        label->setAlignment(Qt::AlignmentFlag::AlignCenter);
+        label->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+        sb->addWidget(label);
+    }
 }
 
 void MainWindow::initTextBrowser()

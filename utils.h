@@ -7,6 +7,11 @@
 #include <cassert>
 #include <memory>
 
+template<typename T, size_t N> constexpr size_t array_size(T (&)[N])
+{
+    return N;
+}
+
 class ConnectGuard
 {
     QMetaObject::Connection _connection;

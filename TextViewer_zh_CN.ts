@@ -56,8 +56,8 @@
     </message>
     <message>
         <location filename="mainwindow.ui" line="82"/>
-        <source>toolBar</source>
-        <translation type="unfinished"></translation>
+        <source>Tool Bar</source>
+        <translation>工具栏</translation>
     </message>
     <message>
         <location filename="mainwindow.ui" line="102"/>
@@ -121,7 +121,6 @@
     </message>
     <message>
         <location filename="mainwindow.ui" line="160"/>
-        <location filename="mainwindow.ui" line="160"/>
         <source>&amp;Font...</source>
         <translation>字体(&amp;F)...</translation>
     </message>
@@ -156,39 +155,44 @@
         <translation>设置行间距</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="73"/>
+        <location filename="mainwindow.cpp" line="79"/>
         <source>Open a text file to view</source>
         <translation>打开一个文本文档进行查看</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="75"/>
+        <location filename="mainwindow.cpp" line="81"/>
         <source>Text files (*.txt);;All files (*)</source>
         <translation>文本文件 (*.txt);;所有文件 (*)</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="89"/>
+        <location filename="mainwindow.cpp" line="95"/>
         <source>Open file failed.</source>
         <translation>打开文档失败。</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="95"/>
+        <location filename="mainwindow.cpp" line="101"/>
         <source>It&apos;s an empty file.</source>
         <translation>空文档。</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="100"/>
+        <location filename="mainwindow.cpp" line="106"/>
         <source>Too large file.</source>
         <translation>过大的文件。</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="112"/>
+        <location filename="mainwindow.cpp" line="118"/>
         <source>Text size: %1</source>
         <translation>文档大小：%1</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="131"/>
+        <location filename="mainwindow.cpp" line="138"/>
         <source>(No document)</source>
         <translation>（尚未打开文档）</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.cpp" line="119"/>
+        <source>Click mouse middle button to on/off auto scrolling ...</source>
+        <translation>单击鼠标中键，开/关自动滚屏模式...</translation>
     </message>
 </context>
 </TS>

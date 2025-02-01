@@ -49,10 +49,17 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
 
     # qt_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})
 
+    qt_add_lupdate(
+        TS_FILES ${TS_FILES}
+        SOURCE_TARGETS ${PROJECT_NAME}
+    )
+
     qt_add_translations(
         TextViewer
         TS_FILES ${TS_FILES}
     )
+
+    add_dependencies(${PROJECT_NAME} ${PROJECT_NAME}_lupdate)
 
 else()
     if(ANDROID)

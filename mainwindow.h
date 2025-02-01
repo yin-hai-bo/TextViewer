@@ -50,7 +50,7 @@ private slots:
 private:
     std::unique_ptr<Ui::MainWindow> ui;
 
-    QLabel * statusBarLabel_TotalLength_ = nullptr;
+    std::array<QLabel *, 3> statusBarLabels_ = {};
 
     Config config_;
     std::unique_ptr<RecentList> recentList_;
