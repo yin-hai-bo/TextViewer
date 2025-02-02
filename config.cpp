@@ -19,6 +19,10 @@ static const char KEY_LINE_HEIGHT[] = "lineHeight";
 
 const char Config::KEY_RECENT_FILES[] = "recentFiles";
 
+static const char KEY_LANGUAGE[] = "language";
+
+static const QVariant EMPTY_STR(QString(""));
+
 class FontConfig
 {
 public:
@@ -94,9 +98,8 @@ QStringList Config::recentFiles()
     QStringList list;
     list.reserve(keys.size());
 
-    const QVariant emptyStr(QString(""));
     for (const auto & key : keys) {
-        list.push_back(settings_.value(key, emptyStr).toString());
+        list.push_back(settings_.value(key, EMPTY_STR).toString());
     }
 
     return list;
@@ -112,4 +115,50 @@ void Config::setLineHeight(int value)
 {
     SettingsGroupGuard sgg(settings_, GROUP_VIEW);
     settings_.setValue(KEY_LINE_HEIGHT, value);
+}
+
+class LanguageName
+{
+private:
+    struct Mapping
+    {
+        const Config::Language language;
+        const char * name;
+    };
+    static const std::vector<Mapping> mapping_;
+
+public:
+    static const char * toString(Config::Language language)
+    {
+        auto const it
+            = std::find_if(mapping_.cbegin(), mapping_.cend(), [language](const Mapping & m) {
+                  return m.language == language;
+              });
+        return it == mapping_.cend() ? "" : it->name;
+    }
+
+    static Config::Language toLanguage(const QString & name)
+    {
+        auto const it = std::find_if(mapping_.cbegin(), mapping_.cend(), [name](const Mapping & m) {
+            return name.compare(m.name, Qt::CaseInsensitive) == 0;
+        });
+        return it == mapping_.cend() ? Config::Language::System : it->language;
+    }
+};
+const std::vector<LanguageName::Mapping> LanguageName::mapping_ = {
+    {Config::Language::System, "System"},
+    {Config::Language::English, "English"},
+    {Config::Language::SimplifiedChinese, "Simplified Chinese"},
+};
+
+Config::Language Config::language()
+{
+    auto const value = settings_.value(KEY_LANGUAGE, EMPTY_STR).toString();
+    return LanguageName::toLanguage(value);
+}
+
+void Config::setLanguage(Language language)
+{
+    auto const s = LanguageName::toString(language);
+    settings_.setValue(KEY_LANGUAGE, s);
 }

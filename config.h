@@ -33,6 +33,12 @@ public:
         int height;
     };
 
+    enum class Languagae {
+        System,
+        English,
+        SimplifiedChinese,
+    };
+
 public:
     Config();
 
@@ -66,6 +72,9 @@ public:
 
     int lineHeight();
     void setLineHeight(int value);
+
+    Language language();
+    void setLanguage(Language);
 
 private:
     QSettings settings_;
