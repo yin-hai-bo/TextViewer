@@ -9,7 +9,6 @@
 #include "aboutbox.h"
 #include "lineheightdialog.h"
 #include "utils.h"
-#include "viewer.h"
 
 constexpr qint64 MAX_FILE_LENGTH = 1024L * 1024 * 80;
 constexpr int MAX_RECENT_FILES = 5;
@@ -37,7 +36,6 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    autoScrollState_.enabled = false;
     recentList_.reset(new RecentList(
         MAX_RECENT_FILES,
         *this,
@@ -117,15 +115,16 @@ bool MainWindow::openFile(const QString & filename) {
             QString("%1 - [%2]").arg(s_windowTitle).arg(QFileInfo(filename).fileName()));
         ui->actionClose->setEnabled(true);
 
-        int const textSize = ui->textBrowser->document()->characterCount();
-        statusBarLabels_[DOCUMENT_LENGTH]->setText(tr("Text size: %1").arg(QLocale::system().toString(textSize)));
-        statusBarLabels_[CLICK_TO_AUTO_SCROLLING]->setText(tr("Click mouse middle button to on/off auto scrolling ..."));
+        this->fileName_ = filename;
+        this->fileSize_ = ui->textBrowser->document()->characterCount();
+        refreshStatusBar();
 
         this->addFileToRecents(filename);
 
         setTextBrowserLineHeight(ui->textBrowser, config_.lineHeight());
 
         ui->textBrowser->documentOpened();
+
         return true;
     } while (false);
 
@@ -133,14 +132,51 @@ bool MainWindow::openFile(const QString & filename) {
     return false;
 }
 
+static QString decideAutoScrollStateDescription(bool onOff, Viewer::Direction dir)
+{
+    if (!onOff) {
+        static const QString EMPTY("");
+        return EMPTY;
+    }
+    switch (dir) {
+    case Viewer::Direction::Up:
+        return QObject::tr("Auto Scrolling (UP)");
+    case Viewer::Direction::Down:
+        return QObject::tr("Auto Scrolling (DOWN)");
+    default:
+        return QObject::tr("Auto Scrolling");
+    }
+}
+
+void MainWindow::refreshStatusBarAutoScrollState()
+{
+    this->statusBarLabels_[AUTO_SCROLLING]->setText(
+        decideAutoScrollStateDescription(this->autoScrolling_, this->autoScrollDirection_));
+}
+
+void MainWindow::refreshStatusBar()
+{
+    if (isFileOpened()) {
+        statusBarLabels_[DOCUMENT_LENGTH]->setText(
+            tr("Text size: %1").arg(QLocale::system().toString(fileSize_)));
+        statusBarLabels_[CLICK_TO_AUTO_SCROLLING]->setText(
+            tr("Click mouse middle button to on/off auto scrolling ..."));
+    } else {
+        statusBarLabels_[DOCUMENT_LENGTH]->setText(tr("(No document)"));
+        statusBarLabels_[CLICK_TO_AUTO_SCROLLING]->setText("");
+    }
+}
+
 void MainWindow::on_actionClose_triggered()
 {
-    ui->textBrowser->clear();
+    ui->textBrowser->documentClosed();
+
     this->setWindowTitle(s_windowTitle);
     ui->actionClose->setEnabled(false);
-    statusBarLabels_[DOCUMENT_LENGTH]->setText(tr("(No document)"));
-    statusBarLabels_[CLICK_TO_AUTO_SCROLLING]->setText("");
-    ui->textBrowser->documentClosed();
+
+    fileName_.clear();
+    fileSize_ = 0;
+    refreshStatusBar();
 }
 
 void MainWindow::initWindowState()
@@ -175,33 +211,11 @@ void MainWindow::initStatusBar()
     }
 }
 
-static const QString & decideAutoScrollStateDescription(bool onOff, Viewer::Direction dir)
-{
-    static const QString EMPTY("");
-    static const QString NONE = QObject::tr("Auto Scrolling");
-    static const QString UP = QObject::tr("Auto Scrolling (UP)");
-    static const QString DOWN = QObject::tr("Auto Scrolling (DOWN)");
-    if (!onOff) {
-        return EMPTY;
-    }
-    switch (dir) {
-    case Viewer::Direction::Up:
-        return UP;
-    case Viewer::Direction::Down:
-        return DOWN;
-    default:
-        return NONE;
-    }
-}
-
 void MainWindow::initTextBrowser()
 {
     Viewer * const v = ui->textBrowser;
     v->setFont(config_.font());
-    connect(v, &Viewer::autoScrollStateChangeSignal, [this](bool onOff, Viewer::Direction dir) {
-        this->statusBarLabels_[AUTO_SCROLLING]->setText(
-            decideAutoScrollStateDescription(onOff, dir));
-    });
+    connect(v, &Viewer::autoScrollStateChangeSignal, this, &MainWindow::onAutoScrollingChanged);
 }
 
 void MainWindow::initRecentFilesMenu()
@@ -342,6 +356,13 @@ void MainWindow::onActionLanguageTriggered()
     }
 }
 
+void MainWindow::onAutoScrollingChanged(bool onOff, Viewer::Direction dir)
+{
+    this->autoScrolling_ = onOff;
+    this->autoScrollDirection_ = dir;
+    this->refreshStatusBarAutoScrollState();
+}
+
 void MainWindow::onActionRecentFile(int index, const QString & filename)
 {
     if (!this->openFile(filename)) {
@@ -355,5 +376,7 @@ void MainWindow::changeEvent(QEvent * event)
     QMainWindow::changeEvent(event);
     if (event->type() == QEvent::LanguageChange) {
         ui->retranslateUi(this);
+        refreshStatusBar();
+        refreshStatusBarAutoScrollState();
     }
 }

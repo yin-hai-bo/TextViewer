@@ -7,6 +7,7 @@
 #include <memory>
 #include "config.h"
 #include "recentlist.h"
+#include "viewer.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -51,20 +52,22 @@ private slots:
 
     void onActionLanguageTriggered();
 
+    void onAutoScrollingChanged(bool onOff, Viewer::Direction dir);
+
 private:
     std::unique_ptr<Ui::MainWindow> ui;
     std::unique_ptr<QTranslator> translator_;
 
     std::array<QLabel *, 3> statusBarLabels_ = {};
 
+    QString fileName_;
+    size_t fileSize_ = 0;
+
+    bool autoScrolling_ = false;
+    Viewer::Direction autoScrollDirection_ = Viewer::Direction::None;
+
     Config config_;
     std::unique_ptr<RecentList> recentList_;
-
-    struct AutoScrollState
-    {
-        bool enabled;
-        QPoint anchor;
-    } autoScrollState_;
 
     void initWindowState();
     void initStatusBar();
@@ -79,5 +82,9 @@ private:
     void addFileToRecents(const QString & filename);
     bool openFile(const QString & filename);
 
+    void refreshStatusBar();
+    void refreshStatusBarAutoScrollState();
+
+    bool isFileOpened() const { return !fileName_.isEmpty(); }
 };
 #endif // MAINWINDOW_H

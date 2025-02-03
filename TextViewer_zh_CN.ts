@@ -222,7 +222,7 @@
     <message>
         <location filename="mainwindow.cpp" line="140"/>
         <source>(No document)</source>
-        <translation>（尚未打开文档）</translation>
+        <translation>（无打开文档）</translation>
     </message>
     <message>
         <location filename="mainwindow.cpp" line="121"/>

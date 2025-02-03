@@ -17,6 +17,7 @@ public:
     {
         documentOpened_ = false;
         stopAutoScroll();
+        this->clear();
     }
 
     bool isAutoScrollState() const { return timer_; }
