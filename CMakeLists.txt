@@ -30,7 +30,6 @@ set(PROJECT_SOURCES
         viewer.h viewer.cpp
         lineheightdialog.h lineheightdialog.cpp lineheightdialog.ui
         res/TextViewer.rc
-
         res/textviewer.qrc
         ${TS_FILES}
 )
@@ -41,7 +40,6 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(TextViewer
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
-
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET TextViewer APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
@@ -59,7 +57,6 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     )
 
     # add_dependencies(${PROJECT_NAME} ${PROJECT_NAME}_lupdate)
-
 else()
     if(ANDROID)
         add_library(TextViewer SHARED

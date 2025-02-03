@@ -9,12 +9,17 @@
         <translation>关于</translation>
     </message>
     <message>
-        <location filename="aboutbox.ui" line="57"/>
-        <source>A simple text document viewer</source>
-        <translation>一个简单的纯文本文档的查看程序</translation>
+        <location filename="aboutbox.ui" line="98"/>
+        <source>A simple open source application for text view</source>
+        <translation>一个简单、开源的文本查看程序</translation>
     </message>
     <message>
-        <location filename="aboutbox.ui" line="67"/>
+        <location filename="aboutbox.ui" line="111"/>
+        <source>v1.0.0.1</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="aboutbox.ui" line="76"/>
         <source>&lt;a href=&quot;https://github.com/yin-hai-bo/TextViewer&quot;&gt;https://github.com/yin-hai-bo/TextViewer&lt;/a&gt;</source>
         <translation></translation>
     </message>
@@ -190,42 +195,42 @@
         <translation>跟随系统本地语言设置</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="81"/>
+        <location filename="mainwindow.cpp" line="80"/>
         <source>Open a text file to view</source>
         <translation>打开一个文本文档进行查看</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="83"/>
+        <location filename="mainwindow.cpp" line="82"/>
         <source>Text files (*.txt);;All files (*)</source>
         <translation>文本文件 (*.txt);;所有文件 (*)</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="97"/>
+        <location filename="mainwindow.cpp" line="96"/>
         <source>Open file failed.</source>
         <translation>打开文档失败。</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="103"/>
+        <location filename="mainwindow.cpp" line="102"/>
         <source>It&apos;s an empty file.</source>
         <translation>空文档。</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="108"/>
+        <location filename="mainwindow.cpp" line="107"/>
         <source>Too large file.</source>
         <translation>过大的文件。</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="120"/>
+        <location filename="mainwindow.cpp" line="161"/>
         <source>Text size: %1</source>
         <translation>文档大小：%1</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="140"/>
+        <location filename="mainwindow.cpp" line="165"/>
         <source>(No document)</source>
         <translation>（无打开文档）</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="121"/>
+        <location filename="mainwindow.cpp" line="163"/>
         <source>Click mouse middle button to on/off auto scrolling ...</source>
         <translation>单击鼠标中键，开/关自动滚屏模式...</translation>
     </message>
@@ -233,17 +238,17 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="mainwindow.cpp" line="183"/>
+        <location filename="mainwindow.cpp" line="147"/>
         <source>Auto Scrolling</source>
         <translation>自动滚屏</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="184"/>
+        <location filename="mainwindow.cpp" line="143"/>
         <source>Auto Scrolling (UP)</source>
         <translation>自动滚屏（向上）</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="185"/>
+        <location filename="mainwindow.cpp" line="145"/>
         <source>Auto Scrolling (DOWN)</source>
         <translation>自动滚屏（向下）</translation>
     </message>
