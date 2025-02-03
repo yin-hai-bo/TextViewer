@@ -58,7 +58,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         TS_FILES ${TS_FILES}
     )
 
-    add_dependencies(${PROJECT_NAME} ${PROJECT_NAME}_lupdate)
+    # add_dependencies(${PROJECT_NAME} ${PROJECT_NAME}_lupdate)
 
 else()
     if(ANDROID)

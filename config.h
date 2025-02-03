@@ -33,7 +33,7 @@ public:
         int height;
     };
 
-    enum class Languagae {
+    enum class Language {
         System,
         English,
         SimplifiedChinese,

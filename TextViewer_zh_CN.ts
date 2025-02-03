@@ -50,147 +50,182 @@
         <translation>查看(&amp;V)</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="71"/>
+        <location filename="mainwindow.ui" line="63"/>
+        <source>&amp;Language</source>
+        <translation>语言(&amp;L)</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="81"/>
         <source>&amp;Help</source>
         <translation>帮助(&amp;H)</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="82"/>
+        <location filename="mainwindow.ui" line="92"/>
         <source>Tool Bar</source>
         <translation>工具栏</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="102"/>
+        <location filename="mainwindow.ui" line="112"/>
         <source>&amp;Open...</source>
         <translation>打开(&amp;O)...</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="105"/>
+        <location filename="mainwindow.ui" line="115"/>
         <source>Open a text file to view.</source>
         <translation>打开一个文本文档进行查看</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="108"/>
+        <location filename="mainwindow.ui" line="118"/>
         <source>Ctrl+O</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="113"/>
+        <location filename="mainwindow.ui" line="123"/>
         <source>E&amp;xit</source>
         <translation>退出(&amp;X)</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="116"/>
+        <location filename="mainwindow.ui" line="126"/>
         <source>Exit this application.</source>
         <translation>退出本程序</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="124"/>
+        <location filename="mainwindow.ui" line="134"/>
         <source>C&amp;lose</source>
         <translation>关闭(&amp;L)</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="127"/>
+        <location filename="mainwindow.ui" line="137"/>
         <source>Close current document.</source>
         <translation>关闭当前文档</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="130"/>
+        <location filename="mainwindow.ui" line="140"/>
         <source>Ctrl+F4</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="141"/>
+        <location filename="mainwindow.ui" line="151"/>
         <source>Zoom &amp;In</source>
         <translation>放大(&amp;I)</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="144"/>
+        <location filename="mainwindow.ui" line="154"/>
         <source>Ctrl+=</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="152"/>
+        <location filename="mainwindow.ui" line="162"/>
         <source>Zoom &amp;Out</source>
         <translation>缩小(&amp;O)</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="155"/>
+        <location filename="mainwindow.ui" line="165"/>
         <source>Ctrl+-</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="160"/>
+        <location filename="mainwindow.ui" line="170"/>
         <source>&amp;Font...</source>
         <translation>字体(&amp;F)...</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="168"/>
+        <location filename="mainwindow.ui" line="178"/>
         <source>Restore default zoom</source>
         <translation>恢复到默认缩放大小</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="171"/>
+        <location filename="mainwindow.ui" line="181"/>
         <source>&amp;Restore the default zoom (100%)</source>
         <translation>恢复到默认缩放 100% (&amp;R)</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="174"/>
+        <location filename="mainwindow.ui" line="184"/>
         <source>Ctrl+0</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="182"/>
+        <location filename="mainwindow.ui" line="192"/>
         <source>&amp;About</source>
         <translation>关于(&amp;A)</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="187"/>
+        <location filename="mainwindow.ui" line="197"/>
         <source>Line &amp;Height...</source>
         <translation>行间距(&amp;H)...</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="190"/>
+        <location filename="mainwindow.ui" line="200"/>
         <source>Setting the line height</source>
         <translation>设置行间距</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="79"/>
+        <location filename="mainwindow.ui" line="208"/>
+        <source>English</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="211"/>
+        <source>Use English localization.</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="219"/>
+        <source>简体中文</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="222"/>
+        <source>Use Simplified Chinese localization.</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="230"/>
+        <source>System</source>
+        <translation>跟随系统</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="233"/>
+        <source>Use system localization settings</source>
+        <translation>跟随系统本地语言设置</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.cpp" line="81"/>
         <source>Open a text file to view</source>
         <translation>打开一个文本文档进行查看</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="81"/>
+        <location filename="mainwindow.cpp" line="83"/>
         <source>Text files (*.txt);;All files (*)</source>
         <translation>文本文件 (*.txt);;所有文件 (*)</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="95"/>
+        <location filename="mainwindow.cpp" line="97"/>
         <source>Open file failed.</source>
         <translation>打开文档失败。</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="101"/>
+        <location filename="mainwindow.cpp" line="103"/>
         <source>It&apos;s an empty file.</source>
         <translation>空文档。</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="106"/>
+        <location filename="mainwindow.cpp" line="108"/>
         <source>Too large file.</source>
         <translation>过大的文件。</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="118"/>
+        <location filename="mainwindow.cpp" line="120"/>
         <source>Text size: %1</source>
         <translation>文档大小：%1</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="138"/>
+        <location filename="mainwindow.cpp" line="140"/>
         <source>(No document)</source>
         <translation>（尚未打开文档）</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="119"/>
+        <location filename="mainwindow.cpp" line="121"/>
         <source>Click mouse middle button to on/off auto scrolling ...</source>
         <translation>单击鼠标中键，开/关自动滚屏模式...</translation>
     </message>
@@ -198,17 +233,17 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="mainwindow.cpp" line="181"/>
+        <location filename="mainwindow.cpp" line="183"/>
         <source>Auto Scrolling</source>
         <translation>自动滚屏</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="182"/>
+        <location filename="mainwindow.cpp" line="184"/>
         <source>Auto Scrolling (UP)</source>
         <translation>自动滚屏（向上）</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="183"/>
+        <location filename="mainwindow.cpp" line="185"/>
         <source>Auto Scrolling (DOWN)</source>
         <translation>自动滚屏（向下）</translation>
     </message>

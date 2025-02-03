@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
+#include <QActionGroup>
 #include <QFileDialog>
 #include <QFile>
 #include <QFontDialog>
@@ -46,12 +47,14 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow() = default;
 
-void MainWindow::init(const QApplication & app)
+void MainWindow::init()
 {
-    initWindowState(app);
+    initWindowState();
     initStatusBar();
     initTextBrowser();
     initRecentFilesMenu();
+    initLanguageMenu();
+    initLanguage();
     on_actionClose_triggered();
 }
 
@@ -140,7 +143,7 @@ void MainWindow::on_actionClose_triggered()
     ui->textBrowser->documentClosed();
 }
 
-void MainWindow::initWindowState(const QApplication & app)
+void MainWindow::initWindowState()
 {
     QRect geometry = QGuiApplication::primaryScreen()->geometry();
 
@@ -171,9 +174,6 @@ void MainWindow::initStatusBar()
         sb->addWidget(label);
     }
 }
-
-class AutoScrollStateDescription
-{};
 
 static const QString & decideAutoScrollStateDescription(bool onOff, Viewer::Direction dir)
 {
@@ -207,6 +207,65 @@ void MainWindow::initTextBrowser()
 void MainWindow::initRecentFilesMenu()
 {
     this->recentList_->init(config_.recentFiles());
+}
+
+void MainWindow::resetLanguage()
+{
+    if (translator_) {
+        QApplication::removeTranslator(translator_.get());
+        translator_.reset();
+    }
+}
+
+void MainWindow::changeLanguage(const QStringList & uiLanguages)
+{
+    std::unique_ptr<QTranslator> t = std::make_unique<QTranslator>();
+    for (const QString & locale : uiLanguages) {
+        const QString resName = ":/i18n/TextViewer_" + QLocale(locale).name();
+        if (t->load(resName)) {
+            resetLanguage();
+            translator_ = std::move(t);
+            QApplication::installTranslator(translator_.get());
+            return;
+        }
+    }
+}
+
+void MainWindow::initLanguage()
+{
+    switch (config_.language()) {
+    case Config::Language::English:
+        resetLanguage();
+        break;
+    case Config::Language::SimplifiedChinese:
+        changeLanguage(QStringList{QString("zh-CN")});
+        break;
+    default:
+        changeLanguage(QLocale::system().uiLanguages());
+        break;
+    }
+}
+
+void MainWindow::initLanguageMenu()
+{
+    QActionGroup * group = new QActionGroup(this);
+    group->addAction(ui->actionLanguageEnglish);
+    group->addAction(ui->actionLanguageSimplifiedChinese);
+    group->addAction(ui->actionLanguageSystem);
+
+    QAction * action;
+    switch (config_.language()) {
+    case Config::Language::English:
+        action = ui->actionLanguageEnglish;
+        break;
+    case Config::Language::SimplifiedChinese:
+        action = ui->actionLanguageSimplifiedChinese;
+        break;
+    default:
+        action = ui->actionLanguageSystem;
+        break;
+    }
+    action->setChecked(true);
 }
 
 void MainWindow::addFileToRecents(const QString & filename)
@@ -262,10 +321,20 @@ void MainWindow::on_actionLineHeight_triggered()
     }
 }
 
+void MainWindow::on_actionLanguageTriggered() {}
+
 void MainWindow::onActionRecentFile(int index, const QString & filename)
 {
     if (!this->openFile(filename)) {
         this->recentList_->erase(index);
         this->config_.setRecentFiles(recentList_->cbegin(), recentList_->cend());
+    }
+}
+
+void MainWindow::changeEvent(QEvent * event)
+{
+    QMainWindow::changeEvent(event);
+    if (event->type() == QEvent::LanguageChange) {
+        ui->retranslateUi(this);
     }
 }
