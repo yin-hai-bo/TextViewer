@@ -54,7 +54,7 @@ void MainWindow::init()
     initTextBrowser();
     initRecentFilesMenu();
     initLanguageMenu();
-    initLanguage();
+    setLanguage(config_.language());
     on_actionClose_triggered();
 }
 
@@ -231,9 +231,9 @@ void MainWindow::changeLanguage(const QStringList & uiLanguages)
     }
 }
 
-void MainWindow::initLanguage()
+void MainWindow::setLanguage(Config::Language language)
 {
-    switch (config_.language()) {
+    switch (language) {
     case Config::Language::English:
         resetLanguage();
         break;
@@ -248,10 +248,14 @@ void MainWindow::initLanguage()
 
 void MainWindow::initLanguageMenu()
 {
+    std::array actions{
+        ui->actionLanguageSystem, ui->actionLanguageEnglish, ui->actionLanguageSimplifiedChinese};
+
     QActionGroup * group = new QActionGroup(this);
-    group->addAction(ui->actionLanguageEnglish);
-    group->addAction(ui->actionLanguageSimplifiedChinese);
-    group->addAction(ui->actionLanguageSystem);
+    for (QAction * a : actions) {
+        group->addAction(a);
+        connect(a, &QAction::triggered, this, &MainWindow::onActionLanguageTriggered);
+    }
 
     QAction * action;
     switch (config_.language()) {
@@ -321,7 +325,22 @@ void MainWindow::on_actionLineHeight_triggered()
     }
 }
 
-void MainWindow::on_actionLanguageTriggered() {}
+void MainWindow::onActionLanguageTriggered()
+{
+    QAction * const action = qobject_cast<QAction *>(sender());
+    Config::Language newLanguage;
+    if (action == ui->actionLanguageEnglish) {
+        newLanguage = Config::Language::English;
+    } else if (action == ui->actionLanguageSimplifiedChinese) {
+        newLanguage = Config::Language::SimplifiedChinese;
+    } else {
+        newLanguage = Config::Language::System;
+    }
+    if (config_.language() != newLanguage) {
+        config_.setLanguage(newLanguage);
+        setLanguage(newLanguage);
+    }
+}
 
 void MainWindow::onActionRecentFile(int index, const QString & filename)
 {

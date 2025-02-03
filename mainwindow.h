@@ -49,7 +49,7 @@ private slots:
 
     void on_actionLineHeight_triggered();
 
-    void on_actionLanguageTriggered();
+    void onActionLanguageTriggered();
 
 private:
     std::unique_ptr<Ui::MainWindow> ui;
@@ -71,7 +71,7 @@ private:
     void initTextBrowser();
     void initRecentFilesMenu();
     void initLanguageMenu();
-    void initLanguage();
+    void setLanguage(Config::Language language);
 
     void changeLanguage(const QStringList & localeList);
     void resetLanguage();
