@@ -1,8 +1,8 @@
 IDI_ICON1 ICON "textviewer.ico"
 
 1 VERSIONINFO
- FILEVERSION 1,0,0,1
- PRODUCTVERSION 1,0,0,1
+ FILEVERSION 1,0,0
+ PRODUCTVERSION 1,0,0
  FILEFLAGSMASK 0x3fL
  FILEFLAGS 0x0L
  FILEOS 0x40004L
@@ -15,12 +15,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "(YHB)"
             VALUE "FileDescription", "A simple open source text viewer built by QT"
-            VALUE "FileVersion", "1.0.0.1"
+            VALUE "FileVersion", "1.0.0"
             VALUE "InternalName", "TextViewer.exe"
             VALUE "LegalCopyright", "Copyright (C) 2025, YHB"
             VALUE "OriginalFilename", "TextViewer.exe"
             VALUE "ProductName", "QT Learning Group"
-            VALUE "ProductVersion", "1.0.0.1"
+            VALUE "ProductVersion", "1.0.0"
         END
     END
     BLOCK "VarFileInfo"

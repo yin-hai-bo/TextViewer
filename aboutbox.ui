@@ -82,7 +82,7 @@
     <bool>true</bool>
    </property>
   </widget>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>160</x>
@@ -108,7 +108,7 @@
     <item>
      <widget class="QLabel" name="labelVersion">
       <property name="text">
-       <string>v1.0.0.1</string>
+       <string>v1.0.0</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
