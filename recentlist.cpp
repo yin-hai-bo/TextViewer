@@ -9,6 +9,14 @@ static QString makeActionName(const QString & filename, int index)
     return QString("%1 - %2").arg(index + 1).arg(filename);
 }
 
+static void removeMenuAction(QMenu & menu, QAction * action)
+{
+    if (action) {
+        menu.removeAction(action);
+        delete action;
+    }
+}
+
 RecentList::RecentList(size_t maxFiles, IRecentFileSignalReceiver & receiver, QMenu & menu)
     : maxFiles_(maxFiles)
     , recentFileSignalReceiver_(receiver)
@@ -28,6 +36,8 @@ RecentList::~RecentList()
             qOverload<>(&QSignalMapper::map));
     }
     this->actions_.clear();
+    removeMenuAction(this->menu_, separator_);
+    separator_ = nullptr;
 }
 
 void RecentList::init(QStringList && filenames)
@@ -41,7 +51,7 @@ void RecentList::init(QStringList && filenames)
     }
 
     if (!this->filenames_.empty()) {
-        this->menu_.addSeparator();
+        separator_ = this->menu_.addSeparator();
     }
 
     for (const QString & filename : this->filenames_) {
@@ -66,8 +76,8 @@ void RecentList::insertToFront(const QString & filename)
             filenames_.pop_back();
         } else {
             ActionPtr action(new QAction);
-            if (!this->filenames_.empty()) {
-                this->menu_.addSeparator();
+            if (separator_ == nullptr) {
+                separator_ = this->menu_.addSeparator();
             }
             this->menu_.addAction(action.get());
             this->actions_.push_back(std::move(action));
@@ -83,6 +93,10 @@ void RecentList::erase(int index)
     QObject::disconnect(
         action.get(), &QAction::triggered, &this->signalMapper_, qOverload<>(&QSignalMapper::map));
     this->actions_.pop_back();
+    if (this->filenames_.empty()) {
+        removeMenuAction(this->menu_, separator_);
+        separator_ = nullptr;
+    }
     this->resetActions();
 }
 

@@ -39,6 +39,7 @@ private:
     const size_t maxFiles_;
     IRecentFileSignalReceiver & recentFileSignalReceiver_;
     QMenu & menu_;
+    QAction * separator_ = nullptr;
 
     QSignalMapper signalMapper_;
     std::deque<QString> filenames_;
