@@ -4,6 +4,7 @@
 #include <QSettings>
 #include <QFont>
 #include <QList>
+#include <QChar>
 #include <QStringView>
 
 class SettingsGroupGuard
@@ -51,9 +52,10 @@ public:
 
         int i = 1;
         while (first != last) {
-            char key[64];
-            _ltoa_s(i, key, 10);
-            settings_.setValue(key, *first);
+            constexpr int RECENT_FILE_KEY_WIDTH = 3;
+            settings_.setValue(
+                QString("%1").arg(i, RECENT_FILE_KEY_WIDTH, 10, QChar('0')),
+                *first);
             ++first;
             ++i;
         }
