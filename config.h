@@ -32,7 +32,11 @@ public:
     };
 
 public:
-    Config();
+    Config(const QString & organization = "YHB", const QString & application = "TextViewer");
+    Config(QSettings::Format format,
+           QSettings::Scope scope,
+           const QString & organization,
+           const QString & application);
 
     void setFont(const QFont & font);
     QFont font();

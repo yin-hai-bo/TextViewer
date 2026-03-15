@@ -43,8 +43,15 @@ public:
     }
 };
 
-Config::Config()
-    : settings_(QString("YHB"), QString("TextViewer"))
+Config::Config(const QString & organization, const QString & application)
+    : settings_(organization, application)
+{}
+
+Config::Config(QSettings::Format format,
+               QSettings::Scope scope,
+               const QString & organization,
+               const QString & application)
+    : settings_(format, scope, organization, application)
 {}
 
 void Config::setFont(const QFont & font)

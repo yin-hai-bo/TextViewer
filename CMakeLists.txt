@@ -12,6 +12,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets LinguistTools)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets LinguistTools)
 
+include(CTest)
+
 set(TS_FILES TextViewer_zh_CN.ts)
 
 set(PROJECT_SOURCES
@@ -75,22 +77,26 @@ endif()
 
 target_link_libraries(TextViewer PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
 
-if(WIN32 AND QT_VERSION_MAJOR EQUAL 6)
-    get_target_property(QMAKE_EXECUTABLE Qt6::qmake IMPORTED_LOCATION)
-    get_filename_component(QT_BIN_DIR "${QMAKE_EXECUTABLE}" DIRECTORY)
-    find_program(WINDEPLOYQT_EXECUTABLE windeployqt HINTS "${QT_BIN_DIR}")
+function(deploy_qt_runtime target_name)
+    if(WIN32 AND QT_VERSION_MAJOR EQUAL 6)
+        get_target_property(QMAKE_EXECUTABLE Qt6::qmake IMPORTED_LOCATION)
+        get_filename_component(QT_BIN_DIR "${QMAKE_EXECUTABLE}" DIRECTORY)
+        find_program(WINDEPLOYQT_EXECUTABLE windeployqt HINTS "${QT_BIN_DIR}")
 
-    if(WINDEPLOYQT_EXECUTABLE)
-        add_custom_command(TARGET TextViewer POST_BUILD
-            COMMAND "${WINDEPLOYQT_EXECUTABLE}"
-                --dir "$<TARGET_FILE_DIR:TextViewer>"
-                "$<TARGET_FILE:TextViewer>"
-            COMMENT "Deploying Qt runtime dependencies"
-        )
-    else()
-        message(WARNING "windeployqt not found; TextViewer.exe may not run outside Qt Creator.")
+        if(WINDEPLOYQT_EXECUTABLE)
+            add_custom_command(TARGET ${target_name} POST_BUILD
+                COMMAND "${WINDEPLOYQT_EXECUTABLE}"
+                    --dir "$<TARGET_FILE_DIR:${target_name}>"
+                    "$<TARGET_FILE:${target_name}>"
+                COMMENT "Deploying Qt runtime dependencies for ${target_name}"
+            )
+        else()
+            message(WARNING "windeployqt not found; ${target_name} may not run outside Qt Creator.")
+        endif()
     endif()
-endif()
+endfunction()
+
+deploy_qt_runtime(TextViewer)
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
 # If you are developing for iOS or macOS you should consider setting an
@@ -115,4 +121,8 @@ install(TARGETS TextViewer
 
 if(QT_VERSION_MAJOR EQUAL 6)
     qt_finalize_executable(TextViewer)
+endif()
+
+if(BUILD_TESTING)
+    add_subdirectory(tests)
 endif()
