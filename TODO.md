@@ -2,9 +2,9 @@
 
 ## Milestone 1: Stability
 
-- [ ] Add `MainWindow` flow tests for startup, empty state, and close behavior.
-- [ ] Add file-opening tests for normal text, empty files, missing files, and large files.
-- [ ] Add UI-level recent file tests for insertion, deduplication, and reopening from the menu.
+- [x] Add `MainWindow` flow tests for startup, empty state, and close behavior.
+- [x] Add file-opening tests for normal text, empty files, missing files, and large files.
+- [x] Add UI-level recent file tests for insertion, deduplication, and reopening from the menu.
 - [ ] Expand config restore tests for window geometry, line height, font, and language.
 - [ ] Add a translation smoke test to verify key UI text updates after language switches.
 - [ ] Keep test persistence isolated from machine-specific settings backends.

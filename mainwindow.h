@@ -15,15 +15,26 @@ class MainWindow;
 }
 QT_END_NAMESPACE
 
+class QFile;
+
 class MainWindow : public QMainWindow, public RecentList::IRecentFileSignalReceiver
 {
     Q_OBJECT
 
 public:
+    using FileValidator = QString (*)(const QFile & file);
+
     MainWindow(QWidget *parent = nullptr);
+    MainWindow(QSettings::Format format,
+               QSettings::Scope scope,
+               const QString & organization,
+               const QString & application,
+               QWidget *parent = nullptr);
     ~MainWindow();
 
     void init();
+    bool openFileForTesting(const QString & filename);
+    bool openFileForTesting(const QString & filename, FileValidator validator);
 
     void onActionRecentFile(int index, const QString & filename) override;
 
@@ -81,6 +92,8 @@ private:
 
     void addFileToRecents(const QString & filename);
     bool openFile(const QString & filename);
+    bool openFile(const QString & filename, FileValidator validator);
+    static QString validateFile(const QFile & file);
 
     void refreshStatusBar();
     void refreshStatusBarAutoScrollState();

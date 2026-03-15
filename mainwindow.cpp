@@ -58,8 +58,17 @@ static QRect centeredWindowRect(const QSize & size)
 }
 
 MainWindow::MainWindow(QWidget *parent)
+    : MainWindow(QSettings::NativeFormat, QSettings::UserScope, "YHB", "TextViewer", parent)
+{}
+
+MainWindow::MainWindow(QSettings::Format format,
+                       QSettings::Scope scope,
+                       const QString & organization,
+                       const QString & application,
+                       QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
+    , config_(format, scope, organization, application)
 {
     ui->setupUi(this);
     recentList_.reset(new RecentList(
@@ -70,6 +79,20 @@ MainWindow::MainWindow(QWidget *parent)
 }
 
 MainWindow::~MainWindow() = default;
+
+QString MainWindow::validateFile(const QFile & file)
+{
+    qint64 const fileLength = file.size();
+    if (fileLength == 0) {
+        return tr("It's an empty file.");
+    }
+
+    if (fileLength > MAX_FILE_LENGTH) {
+        return tr("Too large file.");
+    }
+
+    return QString();
+}
 
 void MainWindow::init()
 {
@@ -108,7 +131,23 @@ void MainWindow::on_actionOpen_triggered()
     openFile(filename);
 }
 
-bool MainWindow::openFile(const QString & filename) {
+bool MainWindow::openFileForTesting(const QString & filename)
+{
+    return openFile(filename);
+}
+
+bool MainWindow::openFileForTesting(const QString & filename, FileValidator validator)
+{
+    return openFile(filename, validator);
+}
+
+bool MainWindow::openFile(const QString & filename)
+{
+    return openFile(filename, &MainWindow::validateFile);
+}
+
+bool MainWindow::openFile(const QString & filename, FileValidator validator)
+{
     QString errorMsg;
     do {
         QFile file(filename);
@@ -117,14 +156,8 @@ bool MainWindow::openFile(const QString & filename) {
             break;
         }
 
-        auto const fileLength = file.size();
-        if (fileLength == 0) {
-            errorMsg = tr("It's an empty file.");
-            break;
-        }
-
-        if (fileLength > MAX_FILE_LENGTH) {
-            errorMsg = tr("Too large file.");
+        errorMsg = validator(file);
+        if (!errorMsg.isEmpty()) {
             break;
         }
 
