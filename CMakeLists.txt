@@ -75,6 +75,23 @@ endif()
 
 target_link_libraries(TextViewer PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
 
+if(WIN32 AND QT_VERSION_MAJOR EQUAL 6)
+    get_target_property(QMAKE_EXECUTABLE Qt6::qmake IMPORTED_LOCATION)
+    get_filename_component(QT_BIN_DIR "${QMAKE_EXECUTABLE}" DIRECTORY)
+    find_program(WINDEPLOYQT_EXECUTABLE windeployqt HINTS "${QT_BIN_DIR}")
+
+    if(WINDEPLOYQT_EXECUTABLE)
+        add_custom_command(TARGET TextViewer POST_BUILD
+            COMMAND "${WINDEPLOYQT_EXECUTABLE}"
+                --dir "$<TARGET_FILE_DIR:TextViewer>"
+                "$<TARGET_FILE:TextViewer>"
+            COMMENT "Deploying Qt runtime dependencies"
+        )
+    else()
+        message(WARNING "windeployqt not found; TextViewer.exe may not run outside Qt Creator.")
+    endif()
+endif()
+
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
 # If you are developing for iOS or macOS you should consider setting an
 # explicit, fixed bundle identifier manually though.
