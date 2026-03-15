@@ -8,11 +8,7 @@ static const char KEY_STYLE[] = "style";
 static const char KEY_WEIGHT[] = "weight";
 
 static const char KEY_WINDOW_STATE[] = "windowState";
-static const char KEY_X[] = "x";
-static const char KEY_Y[] = "y";
-static const char KEY_WIDTH[] = "width";
-static const char KEY_HEIGHT[] = "height";
-static const char KEY_MAXIMIZED[] = "maximized";
+static const char KEY_GEOMETRY[] = "geometry";
 
 static const char GROUP_VIEW[] = "view";
 static const char KEY_LINE_HEIGHT[] = "lineHeight";
@@ -61,28 +57,16 @@ QFont Config::font()
     return FontConfig::load(settings_);
 }
 
-void Config::setWindowState(const WindowState & state)
+void Config::setWindowGeometry(const QByteArray & geometry)
 {
     SettingsGroupGuard sgg(settings_, KEY_WINDOW_STATE);
-    settings_.setValue(KEY_MAXIMIZED, state.maximized);
-    settings_.setValue(KEY_X, state.x);
-    settings_.setValue(KEY_Y, state.y);
-    settings_.setValue(KEY_WIDTH, state.width);
-    settings_.setValue(KEY_HEIGHT, state.height);
+    settings_.setValue(KEY_GEOMETRY, geometry);
 }
 
-bool Config::getWindowState(WindowState * state)
+QByteArray Config::windowGeometry()
 {
     SettingsGroupGuard sgg(settings_, KEY_WINDOW_STATE);
-    if (settings_.childKeys().isEmpty()) {
-        return false;
-    }
-    state->maximized = settings_.value(KEY_MAXIMIZED, state->maximized).toBool();
-    state->x = settings_.value(KEY_X, state->x).toInt();
-    state->y = settings_.value(KEY_Y, state->y).toInt();
-    state->width = settings_.value(KEY_WIDTH, state->width).toInt();
-    state->height = settings_.value(KEY_HEIGHT, state->height).toInt();
-    return true;
+    return settings_.value(KEY_GEOMETRY).toByteArray();
 }
 
 QStringList Config::recentFiles()

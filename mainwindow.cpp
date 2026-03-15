@@ -31,6 +31,32 @@ static void setTextBrowserLineHeight(QTextBrowser * tb, int value)
     cursor.mergeBlockFormat(blockFormat);
 }
 
+static bool isWindowVisibleOnAnyScreen(const QRect & rect)
+{
+    static constexpr int MIN_VISIBLE_SIZE = 80;
+
+    for (QScreen * screen : QGuiApplication::screens()) {
+        QRect const visible = rect.intersected(screen->availableGeometry());
+        if (visible.width() >= MIN_VISIBLE_SIZE && visible.height() >= MIN_VISIBLE_SIZE) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+static QRect centeredWindowRect(const QSize & size)
+{
+    QRect const available = QGuiApplication::primaryScreen()->availableGeometry();
+    QSize const boundedSize(
+        std::min(size.width(), available.width()),
+        std::min(size.height(), available.height()));
+    QPoint const topLeft(
+        available.center().x() - boundedSize.width() / 2,
+        available.center().y() - boundedSize.height() / 2);
+    return QRect(topLeft, boundedSize);
+}
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -58,13 +84,7 @@ void MainWindow::init()
 
 void MainWindow::closeEvent(QCloseEvent * event)
 {
-    Config::WindowState state;
-    state.maximized = this->isMaximized();
-        state.x = this->x();
-        state.y = this->y();
-        state.width = this->width();
-        state.height = this->height();
-    config_.setWindowState(state);
+    config_.setWindowGeometry(this->saveGeometry());
     QMainWindow::closeEvent(event);
 }
 
@@ -181,21 +201,19 @@ void MainWindow::on_actionClose_triggered()
 
 void MainWindow::initWindowState()
 {
-    QRect geometry = QGuiApplication::primaryScreen()->geometry();
-
-    Config::WindowState state;
-    state.maximized = false;
-    state.width = geometry.width() / 2;
-    state.height = geometry.height() / 2;
-    state.x = state.width / 2;
-    state.y = state.height / 2;
-
-    config_.getWindowState(&state);
-
-    this->resize(std::max(80, state.width), std::max(80, state.height));
-    if (state.maximized) {
-        this->setWindowState(Qt::WindowMaximized);
+    QByteArray const geometry = config_.windowGeometry();
+    if (!geometry.isEmpty() && this->restoreGeometry(geometry)) {
+        if (!this->isMaximized() && !isWindowVisibleOnAnyScreen(this->frameGeometry())) {
+            QRect const fallback = centeredWindowRect(this->size());
+            this->setGeometry(fallback);
+        }
+        return;
     }
+
+    QRect const available = QGuiApplication::primaryScreen()->availableGeometry();
+    QSize const defaultSize(available.width() / 2, available.height() / 2);
+    QRect const fallback = centeredWindowRect(defaultSize);
+    this->setGeometry(fallback);
 }
 
 void MainWindow::initStatusBar()

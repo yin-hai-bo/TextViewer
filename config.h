@@ -24,15 +24,6 @@ class Config
 {
     static const char KEY_RECENT_FILES[];
 public:
-    struct WindowState
-    {
-        bool maximized;
-        int x;
-        int y;
-        int width;
-        int height;
-    };
-
     enum class Language {
         System,
         English,
@@ -45,8 +36,8 @@ public:
     void setFont(const QFont & font);
     QFont font();
 
-    void setWindowState(const WindowState &);
-    bool getWindowState(WindowState *);
+    void setWindowGeometry(const QByteArray & geometry);
+    QByteArray windowGeometry();
 
     template<typename It>
     void setRecentFiles(It first, It last)
